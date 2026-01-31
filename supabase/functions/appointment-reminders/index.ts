@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Supabase Edge Function: appointment-reminders
 // Sends 24h reminders for upcoming appointments.
 

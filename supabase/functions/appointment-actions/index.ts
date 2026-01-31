@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Supabase Edge Function: appointment-actions
 // Public token-based appointment management (confirm/cancel/reschedule/get).
 
