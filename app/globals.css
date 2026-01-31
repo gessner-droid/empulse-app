@@ -1,26 +1,648 @@
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&family=Playfair+Display:wght@600;700;800&display=swap");
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root{
+  /* Brand */
+  --brand-900:#061522;
+  --brand-800:#0A1B2C;
+  --brand-700:#0E2844;
+  --accent:#CFA35A;
+
+  /* Typography */
+  --font-body: "Manrope", ui-sans-serif, system-ui, -apple-system, Segoe UI;
+  --font-display: "Playfair Display", "Manrope", serif;
+  --font-client: "Montserrat", "Manrope", ui-sans-serif, system-ui;
+
+  /* Layout */
+  --bg:
+    radial-gradient(1200px 700px at 12% -20%, rgba(207,163,90,0.16), transparent 60%),
+    radial-gradient(900px 600px at 90% 0%, rgba(0,152,216,0.10), transparent 55%),
+    linear-gradient(180deg, var(--brand-800), var(--brand-700));
+  --text:#ffffff;
+
+  /* White surfaces */
+  --surface:#ffffff;
+  --line: rgba(11,28,45,.10);
+  --shadow: 0 22px 60px rgba(0,0,0,.20);
+  --shadow-soft: 0 12px 28px rgba(0,0,0,.12);
+  --glow: 0 0 0 1px rgba(207,163,90,0.08), 0 10px 30px rgba(207,163,90,0.10);
+  --glow-strong: 0 0 0 1px rgba(207,163,90,0.18), 0 14px 40px rgba(207,163,90,0.18);
+
+  /* Radius */
+  --r-xl:18px;
+  --r-lg:14px;
+  --r-md:12px;
+
+  /* Sidebar */
+  --sidebar-bg:#ffffff;
+  --sidebar-line: rgba(0,0,0,.08);
+  --sidebar-text:#0B1C2D;
+
+  /* Controls */
+  --input-bg:#ffffff;
+  --input-line: rgba(11,28,45,.14);
+
+  /* Buttons */
+  --btn-bg: var(--brand-800);
+  --btn-text: #fff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ========== Base ========== */
+*{ box-sizing:border-box; }
+html,body{
+  margin:0;
+  padding:0;
+  font-family: var(--font-body);
+}
+body{
+  background: var(--bg);
+  color: var(--text);
+}
+a{ color:inherit; }
+
+/* ========== App Shell ========== */
+.app-shell{ display:flex; min-height:100vh; }
+.app-content{ flex:1; min-width:0; padding:34px; }
+
+/* ========== Page Shell ========== */
+.page{ max-width:1200px; margin:0 auto; }
+.page-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+.page-title{
+  font-family: var(--font-display);
+  font-size:40px;
+  margin:0;
+  letter-spacing:-.3px;
+}
+.page-sub{ margin:8px 0 0; opacity:.86; }
+
+/* ========== Surface ========== */
+.surface{
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-soft), var(--glow);
+  color: var(--brand-800);
+}
+.surface.pad{ padding:20px; }
+
+/* ========== Toolbar / Inputs ========== */
+.toolbar{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+
+.input, .select, .textarea, .search-input{
+  width:100%;
+  height:48px;
+  padding:0 16px;
+  border-radius: var(--r-lg);
+  border:1px solid var(--input-line);
+  background: var(--input-bg);
+  color: rgba(11,28,45,0.88);
+  outline:none;
+}
+.textarea{
+  height:auto;
+  padding:12px 14px;
+  min-height:90px;
+}
+.select{ cursor:pointer; }
+
+.search-input::placeholder{
+  color: rgba(11,28,45,0.45);
+}
+.search-input:focus,
+.input:focus,
+.select:focus,
+.textarea:focus{
+  border-color: rgba(0,152,216,0.55);
+  box-shadow: 0 0 0 4px rgba(0,152,216,0.16), 0 0 14px rgba(207,163,90,0.10);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ========== Header Buttons (oben rechts) ========== */
+/* Du nutzt im Code: className="btn ghost" und className="btn primary" */
+.btn{
+  height:40px;
+  padding:0 14px;
+  border-radius: var(--r-lg);
+  border:1px solid rgba(255,255,255,0.18);
+  cursor:pointer;
+  font-weight:600;
+  letter-spacing: .2px;
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, filter .12s ease;
+}
+.btn:active{ transform: translateY(1px); }
+
+.btn.ghost{
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.92);
+}
+.btn.ghost:hover{
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.18), 0 0 18px rgba(207,163,90,0.12);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.btn.primary{
+  border-color: rgba(207,163,90,0.45);
+  background: linear-gradient(180deg, rgba(207,163,90,0.32), rgba(207,163,90,0.18));
+  color: rgba(255,255,255,0.95);
+  font-weight:700;
+}
+.btn.primary:hover{
+  box-shadow: 0 14px 30px rgba(207,163,90,0.22), 0 14px 30px rgba(0,0,0,0.18), 0 0 22px rgba(207,163,90,0.14);
+  filter: brightness(1.05);
+}
+
+/* Shared CTA style for appointment + consent */
+.btn-appointment{
+  background: linear-gradient(135deg, #0098d8, #007bb0);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,152,216,0.25);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.btn-appointment:hover{
+  box-shadow: 0 8px 18px rgba(0,152,216,0.28), 0 0 16px rgba(0,152,216,0.18);
+  filter: brightness(1.04);
+}
+.btn-appointment:active{
+  transform: translateY(1px);
+}
+.btn-appointment:disabled{
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ========== Modal ========== */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background: rgba(0,0,0,.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:50;
+}
+.modal{
+  width:min(860px, 100%);
+  background:#fff;
+  color: var(--brand-800);
+  border-radius: var(--r-xl);
+  border:1px solid var(--line);
+  box-shadow: var(--shadow);
+  padding:18px;
+}
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:28px;
+}
+.label{ font-size:13px; color: rgba(11,28,45,.68); }
+
+/* ========== Sidebar ========== */
+.sidebar{
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-line);
+  overflow: hidden;
+  transition: width .18s ease;
+}
+.sidebar-top{
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(11,28,45,.10);
+  background: #ffffff;
+}
+.sidebar-logoLink{
+  display:flex;
+  align-items:center;
+  text-decoration:none;
+}
+.sidebar-logo{
+  height: 64px;
+  position: relative;
+}
+
+.nav{
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  text-decoration:none;
+  color: var(--sidebar-text);
+  background: #ffffff;
+  border: 1px solid rgba(11,28,45,.10);
+  transition: background .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.nav-item:hover{
+  background: rgba(0,152,216,.06);
+  border-color: rgba(0,152,216,.22);
+}
+.nav-item.active{
+  background: rgba(0,152,216,.12);
+  border-color: rgba(0,152,216,.45);
+  box-shadow: 0 0 0 3px rgba(0,152,216,.12);
+}
+.nav-icon{
+  width: 28px;
+  height: 28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius: 10px;
+  background: rgba(11,28,45,.04);
+  border: 1px solid rgba(11,28,45,.08);
+}
+
+/* ========== Clients UI (einmal, ohne Dopplung) ========== */
+/* Abstand Suche -> erste Karte (wird von Surface.className="clients-search" genutzt) */
+.clients-search{ margin-bottom: 34px; }  /* 28–40 nach Geschmack */
+
+.client-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px; /* Kunden untereinander */
+}
+
+/* ===== Responsive: Kundenliste ===== */
+@media (max-width: 980px){
+  .app-content{ padding: 28px; }
+  .page-title{ font-size: 34px; }
+  .client-row{ gap: 12px; }
+  .client-meta{ gap: 10px; }
+}
+
+@media (max-width: 720px){
+  .app-content{ padding: 20px; }
+  .page-title{ font-size: 30px; }
+  .page-head{ flex-direction: column; align-items: flex-start; }
+  .client-row{ flex-direction: column; align-items: flex-start; }
+  .client-actions{ margin-left: 0; }
+  .client-meta{ gap: 8px; font-size: 13px; }
+}
+
+/* ===== Responsive: Kundenakte ===== */
+@media (max-width: 980px){
+  .client-detail-grid{ grid-template-columns: 1fr !important; }
+  .client-detail-card{ padding: 12px !important; }
+}
+
+@media (max-width: 720px){
+  .client-detail-head{ flex-direction: column; align-items: flex-start; gap: 12px; }
+  .client-detail-actions{ flex-wrap: wrap; }
+  .session-list{ max-height: none !important; }
+  .session-card{ padding: 12px !important; }
+}
+
+.client-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+}
+.client-main{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:0;
+}
+.client-name{
+  font-family: var(--font-client);
+  font-size:19px;
+  font-weight:700;
+  color:#0b1c2d;
+}
+.client-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  font-size:14px;
+  color:#4b5563;
+  line-height:1.2;
+}
+.client-meta span{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.client-meta .ok{ color:#16a34a; }
+
+/* Icon Buttons rechts */
+.client-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-left:auto;
+}
+.icon-btn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:#ffffff;
+  border:1px solid rgba(15,23,42,.14);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition: box-shadow .15s ease, transform .12s ease, border-color .15s ease, background .15s ease;
+}
+.icon-btn svg{
+  width:18px;
+  height:18px;
+  color: rgba(15,23,42,.75);
+}
+.icon-btn:hover{ box-shadow: 0 10px 22px rgba(0,0,0,.10); }
+.icon-btn:active{ transform: translateY(1px); }
+
+.icon-btn.danger{ border-color: rgba(220,38,38,.20); }
+.icon-btn.danger svg{ color: rgba(220,38,38,.85); }
+.icon-btn.danger:hover{
+  background: rgba(220,38,38,.04);
+  box-shadow: 0 10px 22px rgba(220,38,38,.14);
+}
+/* Premium Hover-Lift für Kundenkarten (sehr subtil) */
+.client-list .surface{
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+
+.client-list .surface:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(0,0,0,.14), var(--glow-strong);
+  border-color: rgba(0,152,216,.20);
+}/* ===== Modal Save Button (Business Blue) ===== */
+.modal .save-btn{
+  background: linear-gradient(180deg, #0b1c2d, #071827) !important;
+  border: 1px solid rgba(11,28,45,0.65) !important;
+  color: #fff !important;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+
+.modal .save-btn:hover:enabled{
+  box-shadow: 0 18px 40px rgba(0,0,0,0.38);
+  filter: brightness(1.06);
+}
+
+.modal .save-btn:active:enabled{
+  transform: translateY(1px);
+}
+
+/* Disabled: trotzdem edel */
+.modal .save-btn:disabled{
+  background: rgba(33, 85, 138, 0.35) !important;
+  border: 1px solid rgba(11,28,45,0.20) !important;
+  color: rgba(255,255,255,0.85) !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+.client-main-link {
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+  display: block;
+}
+/* Back Link */
+.back-link{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.95);
+}
+.back-link:hover{ background: rgba(255,255,255,0.12); }
+
+/* PDF dropdown styling */
+.pdf-select{
+  height: 40px;
+  border-radius: 14px;
+}
+.back-link{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.95);
+}
+.back-link:hover{ background: rgba(255,255,255,0.12); }
+/* PDF Dropdown im Button-Look */
+.pdf-select{
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.92);
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;          /* clean */
+  -webkit-appearance: none;
+}
+
+.pdf-select:hover{
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.18);
+}
+
+.pdf-select:focus{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0,152,216,0.18);
+}
+
+/* Dropdown Pfeil (optisch wie Button) */
+.pdf-select-wrap{
+  position: relative;
+  display: inline-block;
+}
+
+.pdf-select-wrap::after{
+  content: "▾";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* Option-Text im Dropdown (Browser kann Farben limitieren) */
+.pdf-select option{
+  color: #0B1C2D;
+}
+/* Abstand zwischen weißen Blöcken (Surface) */
+.surface {
+  margin-bottom: 18px;
+}
+/* Modal: Inhalt scrollbar machen */
+.modal{
+  max-height: 85vh;      /* Modal passt in den Bildschirm */
+  overflow: hidden;       /* außen keine Scrollbars */
+}
+
+/* Alles im Modal-Body scrollt */
+.modal-body{
+  max-height: calc(85vh - 64px); /* 64px = Headerhöhe ungefähr */
+  overflow-y: auto;
+  padding-right: 6px;     /* Platz für Scrollbar */
+}
+
+/* Optional: Scrollbar etwas cleaner (Chrome) */
+.modal-body::-webkit-scrollbar{ width: 10px; }
+.modal-body::-webkit-scrollbar-thumb{
+  background: rgba(11,28,45,.18);
+  border-radius: 999px;
+}
+.modal-body::-webkit-scrollbar-track{
+  background: transparent;
+}
+/* Sidebar Footer */
+.sidebar-foot{
+  margin-top: auto;
+  padding: 14px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Footer stärker nach oben ziehen */
+.sidebar-foot--logout{
+  margin-top: auto;
+  padding: 18px 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 🔑 mittig */
+}
+
+/* Logout Button – größer & sichtbarer */
+.sidebar-logout{
+  width: 100%;
+  max-width: 150px;            /* 🔑 nicht zu breit */
+  height: 48px;                /* 🔑 höher */
+  border-radius: 14px;
+  border: 1px solid rgba(255, 90, 90, 0.45);
+  background: rgba(255, 90, 90, 0.14);
+  color: #000000;
+  font-weight: 700;
+  font-size: 15px;             /* 🔑 größere Schrift */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all .15s ease;
+}
+
+/* Mehr Rot + Glow */
+.sidebar-logout--danger:hover{
+  background: rgba(255, 70, 70, 0.22);
+  border-color: rgba(255, 70, 70, 0.75);
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.25),
+    0 0 0 3px rgba(255, 70, 70, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Icon rechts – stärker */
+.sidebar-logout-iconEnd{
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 70, 70, 0.35);
+  border: 1px solid rgba(255, 70, 70, 0.6);
+  color: white;
+  font-size: 15px;
+}
+
+/* Closed-Zustand Marker */
+.sidebar-miniMark{
+  opacity: 0.7;
+  font-size: 18px;
+}
+/* dezente Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(11, 28, 45, 0.2);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(11, 28, 45, 0.35);
+}
+
+/* Danger / Delete Action (z. B. Termin löschen) */
+.btn-danger-action {
+  position: relative;
+  z-index: 2;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  border-radius: 8px;
+
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+  white-space: nowrap;
+
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.btn-danger-action:hover {
+  background: rgba(220, 38, 38, 0.16);
+}
+
+.btn-danger-action:active {
+  transform: translateY(1px);
+}
+
+.btn-danger-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
