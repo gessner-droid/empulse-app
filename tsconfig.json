@@ -23,13 +23,14 @@
     }
   },
   "include": [
-    "next-env.d.ts",
-    "app/**/*.ts",
-    "app/**/*.tsx",
-    "app/**/*.mts",
-    "middleware.off.ts",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
-  ],
-  "exclude": ["node_modules", "supabase/**"]
+  "next-env.d.ts",
+  "app/**/*.ts",
+  "app/**/*.tsx",
+  "app/**/*.mts",
+  "middleware.off.ts",
+  ".next/types/**/*.ts",
+  ".next/dev/types/**/*.ts"
+],
+"exclude": ["node_modules", "supabase/**"]
+
 }
