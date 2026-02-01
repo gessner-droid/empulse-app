@@ -364,30 +364,57 @@ const startsISO = startsLocal.toISOString();
   }
 
   let mailStatusMsg = "";
-  const clientEmail = client?.email?.trim();
+  let clientEmail = client?.email?.trim() || "";
+  let clientName = client?.name ?? "Kunde";
+  if (!clientEmail) {
+    const { data: cData } = await supabase
+      .from("clients")
+      .select("name,email")
+      .eq("id", clientId)
+      .single();
+    clientEmail = cData?.email?.trim() || "";
+    clientName = cData?.name ?? clientName;
+  }
+
   if (!clientEmail) {
     mailStatusMsg = "Termin erstellt, aber es ist keine E-Mail beim Kunden hinterlegt.";
   } else {
     const base = `${appUrl}/appointments/manage`;
-    const { data: mailData, error: mailErr } = await supabase.functions.invoke("appointment-mails", {
-      body: {
-        type: "confirmation",
-        appointment_id: apptRow?.id,
-        client_name: client?.name ?? "Kunde",
-        client_email: clientEmail,
-        starts_at: startsISO,
-        duration_min: duration,
-        confirm_url: `${base}/${confirmToken}?action=confirm`,
-        cancel_url: `${base}/${cancelToken}?action=cancel`,
-        reschedule_url: `${base}/${rescheduleToken}?action=reschedule`,
-      },
-    });
-    if (mailErr || mailData?.ok === false) {
-      const detail =
-        typeof mailData?.error === "string"
-          ? mailData.error
-          : mailErr?.message || "Unbekannter Fehler";
-      mailStatusMsg = `E-Mail konnte nicht gesendet werden: ${detail}`;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData.session?.access_token;
+
+    if (!supabaseUrl || !supabaseKey) {
+      mailStatusMsg = "E-Mail konnte nicht gesendet werden: Supabase env fehlt.";
+    } else {
+      const res = await fetch(`${supabaseUrl}/functions/v1/appointment-mails`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: supabaseKey,
+          Authorization: accessToken ? `Bearer ${accessToken}` : "",
+        },
+        body: JSON.stringify({
+          type: "confirmation",
+          appointment_id: apptRow?.id,
+          client_name: clientName,
+          client_email: clientEmail,
+          starts_at: startsISO,
+          duration_min: duration,
+          confirm_url: `${base}/${confirmToken}?action=confirm`,
+          cancel_url: `${base}/${cancelToken}?action=cancel`,
+          reschedule_url: `${base}/${rescheduleToken}?action=reschedule`,
+        }),
+      });
+      const mailData = await res.json().catch(() => ({}));
+      if (!res.ok || mailData?.ok === false) {
+        const detail =
+          typeof mailData?.error === "string"
+            ? mailData.error
+            : `HTTP ${res.status}`;
+        mailStatusMsg = `E-Mail konnte nicht gesendet werden: ${detail}`;
+      }
     }
   }
 

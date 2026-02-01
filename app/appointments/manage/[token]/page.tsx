@@ -42,16 +42,29 @@ export default function AppointmentManagePage() {
     let alive = true;
     async function load() {
       setLoading(true);
-      const { data, error } = await supabase.functions.invoke("appointment-actions", {
-        body: { action: "get", token },
-      });
-      if (!alive) return;
-      if (error) {
-        setMsg(error.message);
-        setLoading(false);
-        return;
-      }
-      setInfo(data?.appointment ?? null);
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseKey) {
+      setMsg("Supabase env fehlt.");
+      setLoading(false);
+      return;
+    }
+    const res = await fetch(`${supabaseUrl}/functions/v1/appointment-actions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseKey,
+      },
+      body: JSON.stringify({ action: "get", token }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!alive) return;
+    if (!res.ok || data?.error) {
+      setMsg(data?.error || `HTTP ${res.status}`);
+      setLoading(false);
+      return;
+    }
+    setInfo(data?.appointment ?? null);
       setLoading(false);
     }
     if (token) load();
@@ -62,11 +75,23 @@ export default function AppointmentManagePage() {
 
   async function runAction(nextAction: "confirm" | "cancel") {
     setMsg("");
-    const { data, error } = await supabase.functions.invoke("appointment-actions", {
-      body: { action: nextAction, token },
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseKey) {
+      setMsg("Supabase env fehlt.");
+      return;
+    }
+    const res = await fetch(`${supabaseUrl}/functions/v1/appointment-actions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseKey,
+      },
+      body: JSON.stringify({ action: nextAction, token }),
     });
-    if (error) {
-      setMsg(error.message);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data?.error) {
+      setMsg(data?.error || `HTTP ${res.status}`);
       return;
     }
     setInfo(data?.appointment ?? info);
@@ -80,11 +105,23 @@ export default function AppointmentManagePage() {
       return;
     }
     const startsISO = new Date(`${newDate}T${newTime}:00`).toISOString();
-    const { data, error } = await supabase.functions.invoke("appointment-actions", {
-      body: { action: "reschedule", token, starts_at: startsISO },
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseKey) {
+      setMsg("Supabase env fehlt.");
+      return;
+    }
+    const res = await fetch(`${supabaseUrl}/functions/v1/appointment-actions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseKey,
+      },
+      body: JSON.stringify({ action: "reschedule", token, starts_at: startsISO }),
     });
-    if (error) {
-      setMsg(error.message);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data?.error) {
+      setMsg(data?.error || `HTTP ${res.status}`);
       return;
     }
     setInfo(data?.appointment ?? info);

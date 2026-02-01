@@ -1,6 +1,8 @@
 // Supabase Edge Function: appointment-mails
 // Sends confirmation and reminder emails via Resend.
 
+export const config = { auth: false };
+
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const FROM_EMAIL = Deno.env.get("RESEND_FROM") ?? "fysky2006@gmail.com";
 
