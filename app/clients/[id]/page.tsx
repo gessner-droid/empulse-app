@@ -388,13 +388,16 @@ const startsISO = startsLocal.toISOString();
     if (!supabaseUrl || !supabaseKey) {
       mailStatusMsg = "E-Mail konnte nicht gesendet werden: Supabase env fehlt.";
     } else {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        apikey: supabaseKey,
+      };
+      headers.Authorization = accessToken
+        ? `Bearer ${accessToken}`
+        : `Bearer ${supabaseKey}`;
       const res = await fetch(`${supabaseUrl}/functions/v1/appointment-mails`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: supabaseKey,
-          Authorization: accessToken ? `Bearer ${accessToken}` : "",
-        },
+        headers,
         body: JSON.stringify({
           type: "confirmation",
           appointment_id: apptRow?.id,
