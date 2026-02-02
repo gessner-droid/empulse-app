@@ -39,8 +39,9 @@ export default function AppointmentManagePage() {
 
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
-  const preferredAction =
-    action === "cancel" || action === "reschedule" || action === "confirm" ? action : "confirm";
+  const explicitAction =
+    action === "cancel" || action === "reschedule" || action === "confirm" ? action : null;
+  const preferredAction = explicitAction ?? "confirm";
   const [activeAction, setActiveAction] = useState<"confirm" | "cancel" | "reschedule">("confirm");
 
   // keep state in sync with URL / defaults
@@ -196,26 +197,28 @@ export default function AppointmentManagePage() {
               </div>
             </div>
 
-            <div className="appt-actions">
-              <button
-                className={`btn-appointment ${activeAction === "confirm" ? "is-active" : ""}`}
-                onClick={() => selectAction("confirm")}
-              >
-                Bestätigen
-              </button>
-              <button
-                className={`btn ghost ${activeAction === "cancel" ? "is-active" : ""}`}
-                onClick={() => selectAction("cancel")}
-              >
-                Absagen
-              </button>
-              <button
-                className={`btn primary ghosty ${activeAction === "reschedule" ? "is-active" : ""}`}
-                onClick={() => selectAction("reschedule")}
-              >
-                Verschieben
-              </button>
-            </div>
+            {!explicitAction && (
+              <div className="appt-actions">
+                <button
+                  className={`btn-appointment ${activeAction === "confirm" ? "is-active" : ""}`}
+                  onClick={() => selectAction("confirm")}
+                >
+                  Bestätigen
+                </button>
+                <button
+                  className={`btn ghost ${activeAction === "cancel" ? "is-active" : ""}`}
+                  onClick={() => selectAction("cancel")}
+                >
+                  Absagen
+                </button>
+                <button
+                  className={`btn primary ghosty ${activeAction === "reschedule" ? "is-active" : ""}`}
+                  onClick={() => selectAction("reschedule")}
+                >
+                  Verschieben
+                </button>
+              </div>
+            )}
 
             {activeAction === "confirm" && (
               <div className="appt-panel">
