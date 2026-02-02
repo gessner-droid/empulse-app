@@ -221,9 +221,7 @@ export default function AppointmentManagePage() {
             )}
 
             {activeAction === "confirm" && (
-              <div className="appt-panel">
-                <div className="meta-label">Termin bestätigen</div>
-                <p className="appt-help">Bitte bestätigen, damit wir den Termin fix einplanen.</p>
+              <div className="appt-single-action">
                 <button className="btn-appointment" onClick={() => runAction("confirm")}>
                   Jetzt bestätigen
                 </button>
@@ -259,7 +257,7 @@ export default function AppointmentManagePage() {
                   />
                 </div>
                 <div style={{ marginTop: 10 }}>
-                  <button className="btn primary" onClick={reschedule}>
+                  <button className="btn-appointment" onClick={reschedule}>
                     Verschieben
                   </button>
                 </div>
