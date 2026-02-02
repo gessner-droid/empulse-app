@@ -229,9 +229,7 @@ export default function AppointmentManagePage() {
             )}
 
             {activeAction === "cancel" && (
-              <div className="appt-panel">
-                <div className="meta-label">Termin absagen</div>
-                <p className="appt-help">Der Termin wird storniert und steht wieder frei.</p>
+              <div className="appt-single-action">
                 <button className="btn-appointment danger" onClick={() => runAction("cancel")}>
                   Termin absagen
                 </button>
@@ -239,9 +237,7 @@ export default function AppointmentManagePage() {
             )}
 
             {activeAction === "reschedule" && (
-              <div className="appt-panel">
-                <div className="meta-label">Termin verschieben</div>
-                <p className="appt-help">Neuen Zeitpunkt auswählen und speichern.</p>
+              <div className="appt-reschedule-block">
                 <div className="appt-reschedule__grid">
                   <input
                     className="input"
@@ -256,7 +252,7 @@ export default function AppointmentManagePage() {
                     onChange={(e) => setNewTime(e.target.value)}
                   />
                 </div>
-                <div style={{ marginTop: 10 }}>
+                <div className="appt-reschedule__actions">
                   <button className="btn-appointment" onClick={reschedule}>
                     Verschieben
                   </button>
