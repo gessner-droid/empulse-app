@@ -206,13 +206,13 @@ export default function AppointmentManagePage() {
                   Bestätigen
                 </button>
                 <button
-                  className={`btn ghost ${activeAction === "cancel" ? "is-active" : ""}`}
+                  className={`btn-appointment danger ${activeAction === "cancel" ? "is-active" : ""}`}
                   onClick={() => selectAction("cancel")}
                 >
                   Absagen
                 </button>
                 <button
-                  className={`btn primary ghosty ${activeAction === "reschedule" ? "is-active" : ""}`}
+                  className={`btn-appointment ${activeAction === "reschedule" ? "is-active" : ""}`}
                   onClick={() => selectAction("reschedule")}
                 >
                   Verschieben
@@ -232,7 +232,7 @@ export default function AppointmentManagePage() {
               <div className="appt-panel">
                 <div className="meta-label">Termin absagen</div>
                 <p className="appt-help">Der Termin wird storniert und steht wieder frei.</p>
-                <button className="btn ghost danger" onClick={() => runAction("cancel")}>
+                <button className="btn-appointment danger" onClick={() => runAction("cancel")}>
                   Termin absagen
                 </button>
               </div>
