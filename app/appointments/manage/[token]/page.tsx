@@ -23,6 +23,13 @@ export default function AppointmentManagePage() {
   const search = useSearchParams();
   const token = params?.token as string;
   const action = search.get("action");
+  const statusTone: Record<ApptInfo["status"], { label: string; tone: "green" | "amber" | "red" | "blue" }> = {
+    PENDING: { label: "Ausstehend", tone: "amber" },
+    CONFIRMED: { label: "Bestätigt", tone: "green" },
+    CANCELLED: { label: "Abgesagt", tone: "red" },
+    RESCHEDULED: { label: "Verschoben", tone: "blue" },
+    null: { label: "Unbekannt", tone: "amber" },
+  };
 
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState("");
@@ -30,8 +37,17 @@ export default function AppointmentManagePage() {
 
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
+  const preferredAction =
+    action === "cancel" || action === "reschedule" || action === "confirm" ? action : "confirm";
+  const [activeAction, setActiveAction] = useState<"confirm" | "cancel" | "reschedule">("confirm");
+
+  // keep state in sync with URL / defaults
+  useEffect(() => {
+    setActiveAction(preferredAction);
+  }, [preferredAction]);
 
   const actionLabel = useMemo(() => {
+    
     if (action === "confirm") return "Termin bestätigen";
     if (action === "cancel") return "Termin absagen";
     if (action === "reschedule") return "Termin verschieben";
@@ -49,12 +65,14 @@ export default function AppointmentManagePage() {
       setLoading(false);
       return;
     }
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    };
     const res = await fetch(`${supabaseUrl}/functions/v1/appointment-actions`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseKey,
-      },
+      headers,
       body: JSON.stringify({ action: "get", token }),
     });
     const data = await res.json().catch(() => ({}));
@@ -81,12 +99,14 @@ export default function AppointmentManagePage() {
       setMsg("Supabase env fehlt.");
       return;
     }
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    };
     const res = await fetch(`${supabaseUrl}/functions/v1/appointment-actions`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseKey,
-      },
+      headers,
       body: JSON.stringify({ action: nextAction, token }),
     });
     const data = await res.json().catch(() => ({}));
@@ -96,6 +116,11 @@ export default function AppointmentManagePage() {
     }
     setInfo(data?.appointment ?? info);
     setMsg(nextAction === "confirm" ? "Termin bestätigt." : "Termin abgesagt.");
+  }
+
+  function selectAction(action: "confirm" | "cancel" | "reschedule") {
+    setActiveAction(action);
+    setMsg("");
   }
 
   async function reschedule() {
@@ -111,12 +136,14 @@ export default function AppointmentManagePage() {
       setMsg("Supabase env fehlt.");
       return;
     }
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    };
     const res = await fetch(`${supabaseUrl}/functions/v1/appointment-actions`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseKey,
-      },
+      headers,
       body: JSON.stringify({ action: "reschedule", token, starts_at: startsISO }),
     });
     const data = await res.json().catch(() => ({}));
@@ -129,63 +156,112 @@ export default function AppointmentManagePage() {
   }
 
   return (
-    <div className="page" style={{ padding: "34px 0" }}>
-      <div className="surface pad" style={{ maxWidth: 720, margin: "0 auto" }}>
-        <h1 style={{ margin: 0, fontSize: 26 }}>{actionLabel}</h1>
-        <div style={{ marginTop: 6, opacity: 0.7 }}>
-          Bitte bestätigen oder ändern Sie Ihren Termin.
+    <div className="page appt-manage-page">
+      <div className="appt-card">
+        <div className="appt-card__head">
+          <div>
+            <div className="eyebrow">Appointment</div>
+            <h1 className="appt-title">{actionLabel}</h1>
+            <p className="appt-sub">Bitte bestätigen oder ändern Sie Ihren Termin.</p>
+          </div>
+          {info && (
+            <div className={`status-chip tone-${statusTone[info.status].tone}`}>
+              {statusTone[info.status].label}
+            </div>
+          )}
         </div>
 
         {loading ? (
-          <div style={{ marginTop: 16 }}>Lade Termin…</div>
+          <div className="appt-ghost">Lade Termin…</div>
         ) : info ? (
-          <div style={{ marginTop: 16 }}>
-            <div style={{ fontWeight: 700 }}>{info.client_name}</div>
-            <div style={{ opacity: 0.8 }}>{info.client_email}</div>
-            <div style={{ marginTop: 10 }}>
-              Termin: <b>{formatDateTime(info.starts_at)}</b>
-            </div>
-            <div style={{ marginTop: 6, fontSize: 13, opacity: 0.7 }}>
-              Status: {info.status ?? "—"}
+          <>
+            <div className="appt-meta">
+              <div>
+                <div className="meta-label">Name</div>
+                <div className="meta-value strong">{info.client_name}</div>
+              </div>
+              <div>
+                <div className="meta-label">E-Mail</div>
+                <div className="meta-value">{info.client_email}</div>
+              </div>
+              <div>
+                <div className="meta-label">Termin</div>
+                <div className="meta-value strong">{formatDateTime(info.starts_at)}</div>
+              </div>
             </div>
 
-            <div style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <button className="btn-appointment" onClick={() => runAction("confirm")}>
+            <div className="appt-actions">
+              <button
+                className={`btn-appointment ${activeAction === "confirm" ? "is-active" : ""}`}
+                onClick={() => selectAction("confirm")}
+              >
                 Bestätigen
               </button>
-              <button className="btn ghost" onClick={() => runAction("cancel")}>
+              <button
+                className={`btn ghost ${activeAction === "cancel" ? "is-active" : ""}`}
+                onClick={() => selectAction("cancel")}
+              >
                 Absagen
+              </button>
+              <button
+                className={`btn primary ghosty ${activeAction === "reschedule" ? "is-active" : ""}`}
+                onClick={() => selectAction("reschedule")}
+              >
+                Verschieben
               </button>
             </div>
 
-            <div style={{ marginTop: 18 }}>
-              <div className="label">Termin verschieben</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 6 }}>
-                <input
-                  className="input"
-                  type="date"
-                  value={newDate}
-                  onChange={(e) => setNewDate(e.target.value)}
-                />
-                <input
-                  className="input"
-                  type="time"
-                  value={newTime}
-                  onChange={(e) => setNewTime(e.target.value)}
-                />
-              </div>
-              <div style={{ marginTop: 10 }}>
-                <button className="btn primary" onClick={reschedule}>
-                  Verschieben
+            {activeAction === "confirm" && (
+              <div className="appt-panel">
+                <div className="meta-label">Termin bestätigen</div>
+                <p className="appt-help">Bitte bestätigen, damit wir den Termin fix einplanen.</p>
+                <button className="btn-appointment" onClick={() => runAction("confirm")}>
+                  Jetzt bestätigen
                 </button>
               </div>
-            </div>
-          </div>
+            )}
+
+            {activeAction === "cancel" && (
+              <div className="appt-panel">
+                <div className="meta-label">Termin absagen</div>
+                <p className="appt-help">Der Termin wird storniert und steht wieder frei.</p>
+                <button className="btn ghost danger" onClick={() => runAction("cancel")}>
+                  Termin absagen
+                </button>
+              </div>
+            )}
+
+            {activeAction === "reschedule" && (
+              <div className="appt-panel">
+                <div className="meta-label">Termin verschieben</div>
+                <p className="appt-help">Neuen Zeitpunkt auswählen und speichern.</p>
+                <div className="appt-reschedule__grid">
+                  <input
+                    className="input"
+                    type="date"
+                    value={newDate}
+                    onChange={(e) => setNewDate(e.target.value)}
+                  />
+                  <input
+                    className="input"
+                    type="time"
+                    value={newTime}
+                    onChange={(e) => setNewTime(e.target.value)}
+                  />
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  <button className="btn primary" onClick={reschedule}>
+                    Verschieben
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         ) : (
-          <div style={{ marginTop: 16 }}>Termin nicht gefunden.</div>
+          <div className="appt-ghost">Termin nicht gefunden.</div>
         )}
 
-        {msg ? <div style={{ marginTop: 16, opacity: 0.8 }}>{msg}</div> : null}
+        {msg ? <div className="appt-msg">{msg}</div> : null}
       </div>
     </div>
   );
