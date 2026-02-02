@@ -23,12 +23,14 @@ export default function AppointmentManagePage() {
   const search = useSearchParams();
   const token = params?.token as string;
   const action = search.get("action");
-  const statusTone: Record<ApptInfo["status"], { label: string; tone: "green" | "amber" | "red" | "blue" }> = {
+  const statusTone: Record<
+    NonNullable<ApptInfo["status"]>,
+    { label: string; tone: "green" | "amber" | "red" | "blue" }
+  > = {
     PENDING: { label: "Ausstehend", tone: "amber" },
     CONFIRMED: { label: "Bestätigt", tone: "green" },
     CANCELLED: { label: "Abgesagt", tone: "red" },
     RESCHEDULED: { label: "Verschoben", tone: "blue" },
-    null: { label: "Unbekannt", tone: "amber" },
   };
 
   const [loading, setLoading] = useState(true);
@@ -165,8 +167,12 @@ export default function AppointmentManagePage() {
             <p className="appt-sub">Bitte bestätigen oder ändern Sie Ihren Termin.</p>
           </div>
           {info && (
-            <div className={`status-chip tone-${statusTone[info.status].tone}`}>
-              {statusTone[info.status].label}
+            <div
+              className={`status-chip tone-${
+                info.status ? statusTone[info.status].tone : "amber"
+              }`}
+            >
+              {info.status ? statusTone[info.status].label : "Unbekannt"}
             </div>
           )}
         </div>
