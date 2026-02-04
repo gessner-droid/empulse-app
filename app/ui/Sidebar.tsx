@@ -4,13 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { LayoutDashboard, Users, ClipboardList, Video } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Video, Menu, X } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -43,29 +44,63 @@ export default function Sidebar() {
     };
   }, [open]);
 
-  const width = open ? 270 : 86;
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 720px)");
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    document.body.classList.toggle("nav-open", open);
+    return () => document.body.classList.remove("nav-open");
+  }, [open, isMobile]);
+
+  const width = isMobile ? 260 : open ? 270 : 86;
 
   return (
-    <aside
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-      className="sidebar"
-      style={{ width, display: "flex", flexDirection: "column" }}
-    >
-      {/* Logo */}
-      <div className="sidebar-top">
-        <Link href="/dashboard" className="sidebar-logoLink">
-          <div className="sidebar-logo" style={{ width: open ? 210 : 52 }}>
-            <Image
-              src="/logo.png"
-              alt="empulse PRO+"
-              fill
-              priority
-              style={{ objectFit: "contain" }}
-            />
-          </div>
+    <>
+      <div className="mobile-topbar">
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setOpen((prev) => !prev)}
+          aria-label={open ? "Menü schließen" : "Menü öffnen"}
+          aria-expanded={open}
+          aria-controls="mobile-sidebar"
+        >
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
+        <Link href="/dashboard" className="mobile-topbar__brand">
+          empulse
         </Link>
+        <span className="mobile-topbar__spacer" />
       </div>
+
+      {isMobile && open && <div className="mobile-overlay" onClick={() => setOpen(false)} />}
+
+      <aside
+        id="mobile-sidebar"
+        onMouseEnter={isMobile ? undefined : () => setOpen(true)}
+        onMouseLeave={isMobile ? undefined : () => setOpen(false)}
+        className={`sidebar ${open ? "open" : ""}`}
+        style={{ width, display: "flex", flexDirection: "column" }}
+      >
+        {/* Logo */}
+        <div className="sidebar-top">
+          <Link href="/dashboard" className="sidebar-logoLink">
+            <div className="sidebar-logo" style={{ width: open ? 210 : 52 }}>
+              <Image
+                src="/logo.png"
+                alt="empulse PRO+"
+                fill
+                priority
+                style={{ objectFit: "contain" }}
+              />
+            </div>
+          </Link>
+        </div>
 
       {/* Navigation */}
       <nav className="nav">
@@ -115,7 +150,8 @@ export default function Sidebar() {
 </div>
 
 
-    </aside>
+      </aside>
+    </>
   );
 }
 
