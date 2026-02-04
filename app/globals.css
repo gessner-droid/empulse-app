@@ -383,7 +383,6 @@ a{ color:inherit; }
 }
 
 @media (max-width: 720px){
-  .client-detail-head{ flex-direction: column; align-items: flex-start; gap: 12px; }
   .client-detail-actions{
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -416,6 +415,13 @@ a{ color:inherit; }
   align-items:center;
   justify-content:space-between;
   margin-bottom:14px;
+}
+@media (max-width: 720px){
+  .client-detail-head{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }
 .client-main{
   display:flex;
