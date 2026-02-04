@@ -1227,15 +1227,7 @@ const payload = {
   return (
     <PageShell title={client ? client.name : "Kunde"} subtitle="Kundendetails & Verlauf">
       {/* Header-Zeile: Zurück links, Buttons rechts */}
-      <div
-        className="client-detail-head"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 14,
-        }}
-      >
+      <div className="client-detail-head">
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           {/* Zurück – NUR Pfeil */}
           <Link
