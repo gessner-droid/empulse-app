@@ -384,7 +384,16 @@ a{ color:inherit; }
 
 @media (max-width: 720px){
   .client-detail-head{ flex-direction: column; align-items: flex-start; gap: 12px; }
-  .client-detail-actions{ flex-wrap: wrap; }
+  .client-detail-actions{
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .client-detail-actions .btn,
+  .client-detail-actions select.btn{
+    width: 100%;
+    text-align: center;
+  }
   .session-list{ max-height: none !important; }
   .session-card{ padding: 12px !important; }
 }
