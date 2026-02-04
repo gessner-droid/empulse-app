@@ -64,24 +64,39 @@ Deno.serve(async (req) => {
       type === "reminder"
         ? ""
         : `
-      <div style="margin-top:16px;">
-        <a href="${confirm_url}" style="display:inline-block;padding:10px 16px;border-radius:8px;background:#0b1c2d;color:#fff;text-decoration:none;font-weight:600;">Termin bestätigen</a>
-        <a href="${reschedule_url}" style="display:inline-block;padding:10px 16px;border-radius:8px;border:1px solid #d5dbe3;color:#0b1c2d;text-decoration:none;font-weight:600;margin-left:8px;">Verschieben</a>
-        <a href="${cancel_url}" style="display:inline-block;padding:10px 16px;border-radius:8px;border:1px solid #f2c2c2;color:#b91c1c;text-decoration:none;font-weight:600;margin-left:8px;">Absagen</a>
+      <div style="margin-top:18px;">
+        <a href="${confirm_url}" style="display:inline-block;min-width:180px;text-align:center;padding:12px 16px;border-radius:10px;background:linear-gradient(135deg,#0b1c2d,#123a5f);color:#fff;text-decoration:none;font-weight:700;margin:4px 6px 4px 0;">Termin bestätigen</a>
+        <a href="${reschedule_url}" style="display:inline-block;min-width:180px;text-align:center;padding:12px 16px;border-radius:10px;border:1px solid #a9c7e6;color:#0b4f88;text-decoration:none;font-weight:700;margin:4px 6px 4px 0;background:#f3f8ff;">Verschieben</a>
+        <a href="${cancel_url}" style="display:inline-block;min-width:180px;text-align:center;padding:12px 16px;border-radius:10px;background:linear-gradient(135deg,#ff4d4f,#c81e1e);color:#fff;text-decoration:none;font-weight:700;margin:4px 0;">Absagen</a>
       </div>`;
 
     const html = `
-      <div style="font-family:Arial,sans-serif;line-height:1.5;color:#0b1c2d;">
-        <h2 style="margin:0 0 8px;">Hallo ${client_name || "Kunde"},</h2>
-        <p>Ihr Termin ist am <b>${start}</b>.</p>
-        ${durationText ? `<p>${durationText}</p>` : ""}
-        ${
-          type === "reminder"
-            ? "<p>Dies ist Ihre 24h-Erinnerung.</p>"
-            : "<p>Bitte bestätigen Sie den Termin oder verschieben/absagen Sie ihn.</p>"
-        }
-        ${actionHtml}
-        <p style="margin-top:18px;font-size:12px;color:#6b7280;">Diese E-Mail wurde automatisch von der Praxis gesendet.</p>
+      <div style="background:#f5f7fb;padding:32px 12px;">
+        <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e7ecf4;box-shadow:0 10px 34px rgba(11,28,45,0.12);font-family:Arial,sans-serif;line-height:1.6;color:#0b1c2d;">
+          <div style="padding:18px 24px;background:linear-gradient(135deg,#0b1c2d,#123a5f);color:#ffffff;">
+            <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,0.7);font-weight:700;">Empulse</div>
+            <div style="margin-top:6px;font-size:22px;font-weight:700;">
+              ${type === "reminder" ? "Termin-Erinnerung" : "Terminbestätigung"}
+            </div>
+          </div>
+          <div style="padding:24px;">
+            <p style="margin:0 0 8px;font-size:16px;">Hallo ${client_name || "Kunde"},</p>
+            <p style="margin:0 0 12px;color:#334155;">
+              ${type === "reminder" ? "Dies ist Ihre 24h-Erinnerung." : "Bitte bestätigen oder ändern Sie Ihren Termin."}
+            </p>
+
+            <div style="background:#f6f9fd;border:1px solid #e6edf6;border-radius:12px;padding:14px 16px;margin:14px 0;">
+              <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#5b6b7d;">Termin</div>
+              <div style="margin-top:4px;font-size:16px;font-weight:700;">${start}</div>
+              ${durationText ? `<div style="margin-top:6px;color:#4b5563;font-size:13px;">${durationText}</div>` : ""}
+            </div>
+
+            ${actionHtml}
+          </div>
+          <div style="padding:14px 24px;background:#f7f9fc;border-top:1px solid #edf2f7;font-size:12px;color:#6b7280;">
+            Diese E-Mail wurde automatisch von der Praxis gesendet.
+          </div>
+        </div>
       </div>
     `;
 

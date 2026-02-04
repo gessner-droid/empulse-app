@@ -94,6 +94,13 @@ export default function AppointmentManagePage() {
     };
   }, [token]);
 
+  useEffect(() => {
+    document.body.classList.add("public-appointment");
+    return () => {
+      document.body.classList.remove("public-appointment");
+    };
+  }, []);
+
   async function runAction(nextAction: "confirm" | "cancel") {
     setMsg("");
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

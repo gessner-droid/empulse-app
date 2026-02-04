@@ -825,3 +825,52 @@ a{ color:inherit; }
   text-transform: uppercase;
   z-index: 10;
 }
+
+/* ===== Public Appointment Page: Mobile ===== */
+@media (max-width: 720px){
+  .public-appointment .sidebar{
+    display:none;
+  }
+  .public-appointment .app-content{
+    padding: 20px 14px;
+  }
+  .public-appointment .appt-manage-page{
+    padding: 20px 0;
+  }
+  .public-appointment .appt-card{
+    width: 100%;
+    padding: 18px;
+    border-radius: 18px;
+  }
+  .public-appointment .appt-card__head{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .public-appointment .status-chip{
+    align-self: flex-start;
+  }
+  .public-appointment .appt-title{
+    font-size: 24px;
+  }
+  .public-appointment .appt-meta{
+    grid-template-columns: 1fr;
+  }
+  .public-appointment .appt-actions{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .public-appointment .appt-actions .btn-appointment{
+    width: 100%;
+  }
+  .public-appointment .appt-reschedule__grid{
+    grid-template-columns: 1fr;
+  }
+  .public-appointment .appt-single-action .btn-appointment,
+  .public-appointment .appt-reschedule__actions .btn-appointment{
+    width: 100%;
+  }
+  .public-appointment .appt-build-tag{
+    display:none;
+  }
+}
