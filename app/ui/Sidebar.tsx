@@ -73,7 +73,16 @@ export default function Sidebar() {
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
         <Link href="/dashboard" className="mobile-topbar__brand" aria-label="Empulse">
-          <Image src="/logo.png" alt="empulse PRO+" width={110} height={32} priority />
+          <span className="mobile-topbar__logo">
+            <Image
+              src="/logo.png"
+              alt="empulse PRO+"
+              fill
+              priority
+              sizes="120px"
+              style={{ objectFit: "contain" }}
+            />
+          </span>
         </Link>
         <span className="mobile-topbar__spacer" />
       </div>

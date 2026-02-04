@@ -318,13 +318,14 @@ a{ color:inherit; }
     display:flex;
     align-items:center;
     justify-content:center;
-    height: 32px;
+    height: 28px;
     text-decoration:none;
   }
-  .mobile-topbar__brand img{
-    width: 110px;
-    height: 32px;
-    object-fit: contain;
+  .mobile-topbar__logo{
+    position: relative;
+    width: 120px;
+    height: 24px;
+    display:block;
   }
   .mobile-topbar__spacer{ width: 32px; }
   .mobile-menu-btn{
@@ -365,7 +366,9 @@ a{ color:inherit; }
   .app-content{
     padding: calc(90px + env(safe-area-inset-top)) 16px 20px;
   }
-  .app-content{ padding: 20px; }
+  .sidebar-top{
+    display:none;
+  }
   .page-title{ font-size: 30px; }
   .page-head{ flex-direction: column; align-items: flex-start; }
   .client-row{ flex-direction: column; align-items: flex-start; }
