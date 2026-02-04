@@ -519,7 +519,7 @@ const [apptNotes, setApptNotes] = useState("");
 
   useEffect(() => {
     if (!clientId) return;
-    loadAll();
+    loadAll();      
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId]);
 
@@ -1278,10 +1278,6 @@ const payload = {
 
         {/* Buttons rechts – gleiche Höhe */}
         <div className="client-detail-actions" style={{ display: "flex", gap: 10 }}>
-          <button className="btn ghost" onClick={loadAll}>
-            Aktualisieren
-          </button>
-
           <select
             className="btn ghost"
             defaultValue=""
